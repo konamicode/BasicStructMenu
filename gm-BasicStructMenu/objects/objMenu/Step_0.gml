@@ -19,8 +19,14 @@ switch(room) {
 			myMenu.RunCallback(myMenu.currentItem);
 	break;
 	case rm_none:
-		if _esc
-			room_goto_previous();
+		if _down	
+			imageMenu.MenuDown();
+	
+		if _up
+			imageMenu.MenuUp();
+	
+		if _enter
+			imageMenu.RunCallback(imageMenu.currentItem);
 	break;
 }
 	

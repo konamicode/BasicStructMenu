@@ -2,6 +2,7 @@
   "resources": [
     {"id":{"name":"rm_none","path":"rooms/rm_none/rm_none.yy",},"order":1,},
     {"id":{"name":"Menu","path":"scripts/Menu/Menu.yy",},"order":0,},
+    {"id":{"name":"sprMenuBG","path":"sprites/sprMenuBG/sprMenuBG.yy",},"order":0,},
     {"id":{"name":"objMenu","path":"objects/objMenu/objMenu.yy",},"order":0,},
     {"id":{"name":"rm_menu","path":"rooms/rm_menu/rm_menu.yy",},"order":0,},
   ],

@@ -6,6 +6,6 @@ switch(room) {
 		myMenu.DrawMenu(x, y, 16);
 	break;
 	case rm_none:
-		draw_text(x, y, "Press Esc to go back");
+		imageMenu.DrawMenu(x, y, 32);
 	break;
 }
