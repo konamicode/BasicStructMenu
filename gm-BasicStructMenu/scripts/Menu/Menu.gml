@@ -22,6 +22,8 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 	items = ds_list_create();
 	currentItem = 0;
 	expand = _expand;
+	menuFont = -1;
+	menuSpacing = 12;
 	
 	static AddItem = function(text, callback, image_bg = -4) {
 		var itemArray;
@@ -48,7 +50,17 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 		else
 			currentItem -= 1;
 	}
+	
+	static SetFont = function(_font) 
+	{
+		menuFont = _font;
+	}
 
+	static SetSpacing = function(_spacing)
+	{
+		menuSpacing = _spacing;	
+	}
+	
 	static GetText = function(index)
 	{
 		var text = items[| index]
@@ -67,7 +79,7 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 		_func();
 	}
 	
-	function DrawMenu(_x, _y, spacing = 12) {
+	function DrawMenu(_x, _y, spacing = menuSpacing) {
 		for ( var i = 0; i < ds_list_size(items); i++)
 		{
 			var txt = GetText(i);
@@ -94,11 +106,19 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 				textY = _y + ( i * spacing * (1 - expand));
 			}
 
+			var _oldFont = draw_get_font();
+			if ( menuFont != -1)
+			{
+				draw_set_font(menuFont);	
+			}
+			
 			draw_text_color(textX + 1, textY + 1, txt,
 						shadow, shadow, shadow, shadow, 1);
 			draw_text_color(textX, textY, txt,
 						highlight, highlight, highlight, highlight, 1);
 						
+			//reset draw font
+			draw_set_font(_oldFont);
 			draw_set_halign(fa_left);	
 		}
 	}

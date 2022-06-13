@@ -6,6 +6,6 @@ switch(room) {
 		myMenu.DrawMenu(x, y, 16);
 	break;
 	case rm_none:
-		imageMenu.DrawMenu(x, y, 32);
+		imageMenu.DrawMenu(x, y);
 	break;
 }
