@@ -37,7 +37,7 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 		var _sprite_width = 0;
 		var _sprite_height = 0;
 		var _sprite = sprite_get_name(image_bg);
-		if (asset_get_type(_sprite) == asset_sprite) {
+		if (sprite_exists(image_bg)) {
 			_sprite_width = sprite_get_width(image_bg);		
 			_sprite_height = sprite_get_height(image_bg);
 		}
@@ -45,7 +45,7 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 		if ( expand == expandType.vertical ) {
 			show_debug_message(bgHeight);
 			bgWidth = max(bgWidth, string_width(string_upper(text)), _sprite_width);
-			bgHeight += max(string_height(string_upper(text)), _sprite_height) + bgMargin;
+			bgHeight += max(string_height(string_upper(text)), _sprite_height) ;
 			show_debug_message(bgHeight);
 		}
 		else
@@ -75,9 +75,8 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 			currentItem -= 1;
 	}
 	
-	function SetMenuBG(_menuBG) {
-		var _sprite = sprite_get_name(_menuBG);
-		if _menuBG != noone && ( asset_get_type(_sprite) == asset_sprite ){
+	function SetMenuBG(_menuBG) {;
+		if _menuBG != noone && ( sprite_exists(_menuBG) ){
 			show_debug_message("got this far");	
 			menuBG = _menuBG;	
 		}
@@ -117,22 +116,21 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 	}
 	
 	function DrawMenu(_x, _y, spacing = menuSpacing) {
-		if ( menuBG != noone ) {
+		if ( sprite_exists(menuBG) ) {
 			var _xscale = (bgMargin + bgWidth + bgMargin) / sprite_get_width(menuBG);
 			var _yscale = (bgMargin + bgHeight + bgMargin) / sprite_get_height(menuBG);
-			show_debug_message(_yscale);
 			draw_sprite_ext(menuBG, 0, _x, _y, _xscale, _yscale, 0, c_white, 1);
 		}
 		for ( var i = 0; i < ds_list_size(items); i++)
 		{
 			var txt = GetText(i);
-			var highlight = (currentItem = i) ? gray1 : gray2;
+			var highlight = (currentItem == i) ? gray1 : gray2;
 			var shadow = gray4;			
 
 			var bg = GetSprite(i);
 
 			//If we have a background sprite, center the text based on it's position.
-			if bg != noone
+			if sprite_exists(bg)
 			{
 				var _height = sprite_get_height(bg);
 				var _width = sprite_get_width(bg);
@@ -140,7 +138,7 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 				var textX = _x + bgMargin + (i * spacing * (expand)) + (_width / 2);
 				var textY = _y + bgMargin + ( i * spacing * (1 -expand));
 								
-				draw_sprite_ext(bg,  currentItem = i ? 0 : 1, _x + bgMargin + (i * spacing * expand), _y + bgMargin + ( i * spacing * (1- expand)), 1, 1, 0, -1, _alpha);
+				draw_sprite_ext(bg, (currentItem == i) ? 0 : 1, _x + bgMargin + (i * spacing * expand), _y + bgMargin + ( i * spacing * (1- expand)), 1, 1, 0, -1, _alpha);
 				draw_set_halign(fa_center);
 			}
 			else
