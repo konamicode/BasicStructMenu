@@ -22,16 +22,40 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 	items = ds_list_create();
 	currentItem = 0;
 	expand = _expand;
+	menuBG = noone;
 	menuFont = -1;
 	menuSpacing = 12;
+	bgHeight = 0;
+	bgWidth = 0;
+	bgMargin = 6;
 	
 	static AddItem = function(text, callback, image_bg = -4) {
 		var itemArray;
 		itemArray[0] = text;
 		itemArray[1]  = callback;
 		itemArray[2] = image_bg;
+		var _sprite_width = 0;
+		var _sprite_height = 0;
+		var _sprite = sprite_get_name(image_bg);
+		if (asset_get_type(_sprite) == asset_sprite) {
+			_sprite_width = sprite_get_width(image_bg);		
+			_sprite_height = sprite_get_height(image_bg);
+		}
 		ds_list_add(items, itemArray);
+		if ( expand == expandType.vertical ) {
+			show_debug_message(bgHeight);
+			bgWidth = max(bgWidth, string_width(string_upper(text)), _sprite_width);
+			bgHeight += max(string_height(string_upper(text)), _sprite_height) + bgMargin;
+			show_debug_message(bgHeight);
+		}
+		else
+		if (expand == expandType.horizontal) {
+			bgWidth += max(string_width(string_upper(text)), _sprite_width) + bgMargin;
+			bgHeight = max(bgHeight, string_height(string_upper(itemArray[0])), _sprite_height);
+		}	
+		
 	}
+	
 	static Destroy = function() {
 		ds_list_destroy(items);
 	}
@@ -51,6 +75,14 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 			currentItem -= 1;
 	}
 	
+	function SetMenuBG(_menuBG) {
+		var _sprite = sprite_get_name(_menuBG);
+		if _menuBG != noone && ( asset_get_type(_sprite) == asset_sprite ){
+			show_debug_message("got this far");	
+			menuBG = _menuBG;	
+		}
+	}
+	
 	static SetFont = function(_font) 
 	{
 		menuFont = _font;
@@ -59,6 +91,11 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 	static SetSpacing = function(_spacing)
 	{
 		menuSpacing = _spacing;	
+	}
+	
+	static SetMargin = function(_margin)
+	{
+		bgMargin = _margin;
 	}
 	
 	static GetText = function(index)
@@ -80,6 +117,12 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 	}
 	
 	function DrawMenu(_x, _y, spacing = menuSpacing) {
+		if ( menuBG != noone ) {
+			var _xscale = (bgMargin + bgWidth + bgMargin) / sprite_get_width(menuBG);
+			var _yscale = (bgMargin + bgHeight + bgMargin) / sprite_get_height(menuBG);
+			show_debug_message(_yscale);
+			draw_sprite_ext(menuBG, 0, _x, _y, _xscale, _yscale, 0, c_white, 1);
+		}
 		for ( var i = 0; i < ds_list_size(items); i++)
 		{
 			var txt = GetText(i);
@@ -91,19 +134,19 @@ function Menu(type = menuType.text, _expand = expandType.vertical) constructor
 			//If we have a background sprite, center the text based on it's position.
 			if bg != noone
 			{
-				var bgHeight = sprite_get_height(bg);
-				var bgWidth = sprite_get_width(bg);
-				var bgAlpha = 1; //currentItem = i ? 1 : .25;
-				var textX = _x + (i * spacing * (expand)) + (bgWidth / 2);
-				var textY = _y + ( i * spacing * (1 -expand));
+				var _height = sprite_get_height(bg);
+				var _width = sprite_get_width(bg);
+				var _alpha = 1; //currentItem = i ? 1 : .25;
+				var textX = _x + bgMargin + (i * spacing * (expand)) + (_width / 2);
+				var textY = _y + bgMargin + ( i * spacing * (1 -expand));
 								
-				draw_sprite_ext(bg,  currentItem = i ? 0 : 1, _x + (i * spacing * expand), _y + ( i * spacing * (1- expand)), 1, 1, 0, -1, bgAlpha);
+				draw_sprite_ext(bg,  currentItem = i ? 0 : 1, _x + bgMargin + (i * spacing * expand), _y + bgMargin + ( i * spacing * (1- expand)), 1, 1, 0, -1, _alpha);
 				draw_set_halign(fa_center);
 			}
 			else
 			{
-				textX = _x + (i * spacing * (expand));
-				textY = _y + ( i * spacing * (1 - expand));
+				textX = _x + bgMargin + (i * spacing * (expand));
+				textY = _y + bgMargin + ( i * spacing * (1 - expand));
 			}
 
 			var _oldFont = draw_get_font();

@@ -3,7 +3,7 @@
 
 switch(room) {
 	case rm_menu:
-		myMenu.DrawMenu(x, y, 16);
+		myMenu.DrawMenu(x, y);
 	break;
 	case rm_none:
 		imageMenu.DrawMenu(x, y);
